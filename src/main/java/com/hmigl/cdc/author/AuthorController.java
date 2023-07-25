@@ -16,16 +16,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class AuthorController {
 
     private @PersistenceContext EntityManager entityManager;
-    private final UniqueAuthorEmailValidator uniqueAuthorEmailValidator;
-
-    public AuthorController(UniqueAuthorEmailValidator uniqueAuthorEmailValidator) {
-        this.uniqueAuthorEmailValidator = uniqueAuthorEmailValidator;
-    }
-
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.addValidators(uniqueAuthorEmailValidator);
-    }
 
     @PostMapping
     @Transactional
