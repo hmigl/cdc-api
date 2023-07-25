@@ -6,20 +6,25 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+// 3
 @RestController
 @RequestMapping("/api/v1/authors")
 public class AuthorController {
 
-    private final @PersistenceContext EntityManager entityManager;
+    private @PersistenceContext EntityManager entityManager;
+    private final UniqueAuthorEmailValidator uniqueAuthorEmailValidator;
 
-    public AuthorController(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public AuthorController(UniqueAuthorEmailValidator uniqueAuthorEmailValidator) {
+        this.uniqueAuthorEmailValidator = uniqueAuthorEmailValidator;
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.addValidators(uniqueAuthorEmailValidator);
     }
 
     @PostMapping
