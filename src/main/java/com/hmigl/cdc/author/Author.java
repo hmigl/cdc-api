@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
 
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
@@ -28,6 +29,18 @@ public class Author {
 
     public static Author fromDTO(@NotNull AuthorDTO authorDTO) {
         Assert.notNull(authorDTO, "authorDTO must not be null");
+
+        Assert.hasLength(authorDTO.name(), "name must not be blank");
+
+        Assert.hasLength(authorDTO.email(), "email must not be blank");
+        Assert.isTrue(
+                EmailValidator.getInstance().isValid(authorDTO.email()), "email must be valid");
+
+        Assert.hasLength(authorDTO.description(), "description must not be blank");
+        Assert.isTrue(
+                authorDTO.description().length() <= 400,
+                "description cannot exceed 400 characters");
+
         return new Author(authorDTO.name(), authorDTO.email(), authorDTO.description());
     }
 
