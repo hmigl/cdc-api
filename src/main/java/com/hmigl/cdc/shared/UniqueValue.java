@@ -1,4 +1,4 @@
-package com.hmigl.cdc.author;
+package com.hmigl.cdc.shared;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -8,13 +8,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = {UniqueAuthorEmailValidator.class})
-@Target(ElementType.FIELD)
+@Constraint(validatedBy = {UniqueValueValidator.class})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UniqueAuthorEmail {
-    String message() default "This email is taken. Try another";
+@Target(ElementType.FIELD)
+public @interface UniqueValue {
+    String message() default "This {fieldName} is taken. Try another";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
+
+    String fieldName() default "";
+
+    Class<?> domainClass() default Object.class;
 }
