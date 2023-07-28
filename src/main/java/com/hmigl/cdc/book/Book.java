@@ -1,8 +1,15 @@
 package com.hmigl.cdc.book;
 
+import com.hmigl.cdc.author.Author;
+import com.hmigl.cdc.category.Category;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -26,8 +33,14 @@ public class Book {
     private @NotNull @Min(100) Long pages;
     private @NotBlank @ISBN(type = ISBN.Type.ANY) String isbn;
     private @NotNull @Future LocalDateTime publicationDate;
-    private @NotNull Long categoryId;
-    private @NotNull Long authorId;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id_fk")
+    private @NotNull @Valid Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id_fk")
+    private @NotNull @Valid Author author;
 
     @Deprecated
     protected Book() {}
@@ -40,8 +53,8 @@ public class Book {
             @NotNull @Min(100) Long pages,
             @NotBlank @ISBN(type = ISBN.Type.ANY) String isbn,
             @NotNull @Future LocalDateTime publicationDate,
-            @NotNull Long categoryId,
-            @NotNull Long authorId) {
+            @NotNull @Valid Category category,
+            @NotNull @Valid Author author) {
         this.title = title;
         this.overview = overview;
         this.summary = summary;
@@ -49,11 +62,32 @@ public class Book {
         this.pages = pages;
         this.isbn = isbn;
         this.publicationDate = publicationDate;
-        this.categoryId = categoryId;
-        this.authorId = authorId;
+        this.category = category;
+        this.author = author;
     }
 
-    public static Book fromDTO(@NotNull BookDTO bookDTO) {
+    public static Book fromDTO(@NotNull @Valid BookDTO bookDTO, EntityManager manager) {
+        Book.validate(bookDTO);
+
+        var category = manager.find(Category.class, bookDTO.categoryId());
+        Assert.notNull(category, "provided category does not exist");
+
+        var author = manager.find(Author.class, bookDTO.authorId());
+        Assert.notNull(author, "provided author is not available");
+
+        return new Book(
+                bookDTO.title(),
+                bookDTO.overview(),
+                bookDTO.summary(),
+                bookDTO.price(),
+                bookDTO.pages(),
+                bookDTO.isbn(),
+                bookDTO.publicationDate(),
+                category,
+                author);
+    }
+
+    private static void validate(@NotNull @Valid BookDTO bookDTO) {
         Assert.notNull(bookDTO, "bookDTO must not be null");
 
         Assert.hasLength(bookDTO.title(), "title must not be blank");
@@ -80,17 +114,6 @@ public class Book {
         Assert.notNull(bookDTO.categoryId(), "a category must be provided");
 
         Assert.notNull(bookDTO.authorId(), "an author must be specified");
-
-        return new Book(
-                bookDTO.title(),
-                bookDTO.overview(),
-                bookDTO.summary(),
-                bookDTO.price(),
-                bookDTO.pages(),
-                bookDTO.isbn(),
-                bookDTO.publicationDate(),
-                bookDTO.categoryId(),
-                bookDTO.authorId());
     }
 
     public Long getId() {

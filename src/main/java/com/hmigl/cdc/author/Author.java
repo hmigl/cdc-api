@@ -1,14 +1,23 @@
 package com.hmigl.cdc.author;
 
+import com.hmigl.cdc.book.Book;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.*;
+import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Size;
 
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Author {
@@ -18,6 +27,9 @@ public class Author {
     private @NotBlank @Email String email;
     private @NotBlank @Size(max = 400) String description;
     private final @PastOrPresent LocalDateTime instant = LocalDateTime.now();
+
+    @OneToMany(mappedBy = "author")
+    private Set<Book> books = new HashSet<>();
 
     protected Author() {}
 

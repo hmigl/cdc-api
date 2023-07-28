@@ -20,7 +20,7 @@ public class BookController {
     @PostMapping
     @Transactional
     public ResponseEntity<BookDTO> register(@Valid @RequestBody BookDTO bookDTO) {
-        var book = Book.fromDTO(bookDTO);
+        var book = Book.fromDTO(bookDTO, manager);
         manager.persist(book);
         var uri = UriComponentsBuilder.fromPath("/books/{id}").buildAndExpand(book.getId()).toUri();
         return ResponseEntity.created(uri).body(bookDTO);
