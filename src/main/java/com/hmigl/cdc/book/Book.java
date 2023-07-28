@@ -123,4 +123,36 @@ public class Book {
     public String getTitle() {
         return title;
     }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public Long getPages() {
+        return pages;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public LocalDateTime getPublicationDate() {
+        return publicationDate;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public Author getAuthor() {
+        return author;
+    }
 }
