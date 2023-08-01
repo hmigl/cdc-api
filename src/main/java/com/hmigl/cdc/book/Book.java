@@ -21,6 +21,7 @@ import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Book {
@@ -114,6 +115,12 @@ public class Book {
         Assert.notNull(bookDTO.categoryId(), "a category must be provided");
 
         Assert.notNull(bookDTO.authorId(), "an author must be specified");
+    }
+
+    public String formatPublicationDate(final String pattern) {
+        Assert.hasLength(pattern, "pattern cannot be blank and must be valid");
+
+        return this.publicationDate.format(DateTimeFormatter.ofPattern(pattern));
     }
 
     public Long getId() {
