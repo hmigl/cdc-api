@@ -3,17 +3,23 @@ package com.hmigl.cdc.country_state;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import org.springframework.util.Assert;
 
+import java.util.Set;
+
 @Entity
 public class Country {
     private @Id @GeneratedValue Long id;
 
     private @NotBlank String name;
+
+    @OneToMany(mappedBy = "country")
+    private Set<State> states;
 
     @Deprecated
     protected Country() {}
