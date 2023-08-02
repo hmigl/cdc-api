@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 
 import org.springframework.util.Assert;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -44,5 +45,18 @@ public class Country {
 
     public Set<State> getStates() {
         return states;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Country country = (Country) o;
+        return Objects.equals(name, country.name) && Objects.equals(states, country.states);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, states);
     }
 }

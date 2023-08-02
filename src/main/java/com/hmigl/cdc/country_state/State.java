@@ -40,6 +40,10 @@ public class State {
         return new State(stateDTO.name(), country);
     }
 
+    public boolean belongsTo(Country country) {
+        return this.country.equals(country);
+    }
+
     public Long getId() {
         return id;
     }
