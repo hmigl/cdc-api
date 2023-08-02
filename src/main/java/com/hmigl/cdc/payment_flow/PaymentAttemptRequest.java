@@ -5,6 +5,7 @@ import com.hmigl.cdc.country_state.State;
 import com.hmigl.cdc.shared.CpfOrCnpj;
 import com.hmigl.cdc.shared.IdExists;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,4 +19,5 @@ public record PaymentAttemptRequest(
         @NotBlank String address,
         @NotBlank String complement,
         @NotNull @IdExists(fieldName = "id", domainClass = Country.class) Long countryId,
-        @NotNull @IdExists(fieldName = "id", domainClass = State.class) Long stateId) {}
+        @NotNull @IdExists(fieldName = "id", domainClass = State.class) Long stateId,
+        @NotNull @Valid ShoppingCartRequest shoppingCart) {}
