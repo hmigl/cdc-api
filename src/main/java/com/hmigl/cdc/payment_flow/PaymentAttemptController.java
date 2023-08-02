@@ -15,14 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentAttemptController {
 
     private final StateBelongsToCountryValidator stateBelongsToCountryValidator;
+    private final AccurateTotalValidator accurateTotalValidator;
 
-    public PaymentAttemptController(StateBelongsToCountryValidator stateBelongsToCountryValidator) {
+    public PaymentAttemptController(
+            StateBelongsToCountryValidator stateBelongsToCountryValidator,
+            AccurateTotalValidator accurateTotalValidator) {
         this.stateBelongsToCountryValidator = stateBelongsToCountryValidator;
+        this.accurateTotalValidator = accurateTotalValidator;
     }
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        binder.addValidators(stateBelongsToCountryValidator);
+        binder.addValidators(stateBelongsToCountryValidator, accurateTotalValidator);
     }
 
     @PostMapping
