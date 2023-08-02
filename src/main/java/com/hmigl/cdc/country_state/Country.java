@@ -37,4 +37,12 @@ public class Country {
     public Long getId() {
         return id;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public Set<State> getStates() {
+        return states;
+    }
 }
