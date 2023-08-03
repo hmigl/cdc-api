@@ -1,5 +1,7 @@
 package com.hmigl.cdc.payment_flow;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -10,10 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-// 4
+// 5
 @RestController
 @RequestMapping("/api/v1/payments")
 public class PaymentAttemptController {
+    private @PersistenceContext EntityManager manager;
 
     private final StateBelongsToCountryValidator stateBelongsToCountryValidator;
     private final AccurateTotalValidator accurateTotalValidator;
@@ -37,6 +40,7 @@ public class PaymentAttemptController {
     @PostMapping
     public ResponseEntity<?> process(
             @Valid @RequestBody PaymentAttemptRequest paymentAttemptRequest) {
-        return ResponseEntity.ok(paymentAttemptRequest.toString());
+        Purchase newPurchase = paymentAttemptRequest.toModel(manager);
+        return ResponseEntity.ok(newPurchase.toString());
     }
 }

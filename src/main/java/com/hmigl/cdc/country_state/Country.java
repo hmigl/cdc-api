@@ -63,4 +63,9 @@ public class Country {
     public int hashCode() {
         return Objects.hash(name, states);
     }
+
+    @Override
+    public String toString() {
+        return "Country{" + "name='" + name + '\'' + '}';
+    }
 }
