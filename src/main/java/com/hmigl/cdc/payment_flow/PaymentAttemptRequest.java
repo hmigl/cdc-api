@@ -18,6 +18,8 @@ public record PaymentAttemptRequest(
         @NotBlank @CpfOrCnpj String document,
         @NotBlank String address,
         @NotBlank String complement,
+        @NotBlank String city,
+        @NotBlank String cep,
         @NotNull @IdExists(fieldName = "id", domainClass = Country.class) Long countryId,
         @IdExists(fieldName = "id", domainClass = State.class) Long stateId,
         @NotNull @Valid ShoppingCartRequest shoppingCart) {
