@@ -13,8 +13,12 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
+import org.hibernate.validator.internal.constraintvalidators.hv.br.CNPJValidator;
+import org.hibernate.validator.internal.constraintvalidators.hv.br.CPFValidator;
 import org.springframework.util.Assert;
 
+// 3
 @Entity
 public class Purchase {
     private @Id @GeneratedValue Long id;
@@ -102,6 +106,11 @@ public class Purchase {
 
         public Builder email(@NotBlank String email) {
             Assert.hasLength(email, "email must not be blank");
+
+            EmailValidator emailValidator = new EmailValidator();
+            emailValidator.initialize(null);
+            Assert.isTrue(emailValidator.isValid(email, null), "");
+
             this.email = email;
             return this;
         }
@@ -114,6 +123,15 @@ public class Purchase {
 
         public Builder document(@NotBlank String document) {
             Assert.hasLength(document, "document must not be blank");
+
+            CPFValidator cpfValidator = new CPFValidator();
+            cpfValidator.initialize(null);
+            CNPJValidator cnpjValidator = new CNPJValidator();
+            cnpjValidator.initialize(null);
+            Assert.isTrue(
+                    cpfValidator.isValid(document, null) || cnpjValidator.isValid(document, null),
+                    "document must be either CPF or CNPJ");
+
             this.document = document;
             return this;
         }
