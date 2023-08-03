@@ -35,6 +35,10 @@ public class Country {
         return new Country(countryDTO.name());
     }
 
+    public boolean hasStates() {
+        return !this.states.isEmpty();
+    }
+
     public Long getId() {
         return id;
     }
