@@ -19,5 +19,9 @@ public record PaymentAttemptRequest(
         @NotBlank String address,
         @NotBlank String complement,
         @NotNull @IdExists(fieldName = "id", domainClass = Country.class) Long countryId,
-        @NotNull @IdExists(fieldName = "id", domainClass = State.class) Long stateId,
-        @NotNull @Valid ShoppingCartRequest shoppingCart) {}
+        @IdExists(fieldName = "id", domainClass = State.class) Long stateId,
+        @NotNull @Valid ShoppingCartRequest shoppingCart) {
+    public boolean containsState() {
+        return this.stateId != null;
+    }
+}

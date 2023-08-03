@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+// 6
 @Component
 public class StateBelongsToCountryValidator implements Validator {
 
@@ -28,11 +29,13 @@ public class StateBelongsToCountryValidator implements Validator {
 
         PaymentAttemptRequest request = (PaymentAttemptRequest) target;
 
-        Country country = manager.find(Country.class, request.countryId());
-        State state = manager.find(State.class, request.stateId());
+        if (request.containsState()) {
+            Country country = manager.find(Country.class, request.countryId());
+            State state = manager.find(State.class, request.stateId());
 
-        if (!state.belongsTo(country)) {
-            errors.rejectValue("stateId", null, "state does not belong to selected country");
+            if (!state.belongsTo(country)) {
+                errors.rejectValue("stateId", null, "state does not belong to selected country");
+            }
         }
     }
 }
