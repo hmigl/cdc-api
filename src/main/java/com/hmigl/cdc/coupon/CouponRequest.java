@@ -1,5 +1,7 @@
 package com.hmigl.cdc.coupon;
 
+import com.hmigl.cdc.shared.UniqueValue;
+
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +10,7 @@ import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
 
 public record CouponRequest(
-        @NotBlank String code,
+        @NotBlank @UniqueValue(fieldName = "code", domainClass = Coupon.class) String code,
         @NotNull @Positive Integer discountPercentage,
         @NotNull @Future LocalDate expirationDate) {
     public Coupon toModel() {
