@@ -18,7 +18,7 @@ public class AccurateTotalValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return PaymentAttemptRequest.class.isAssignableFrom(clazz);
+        return PurchaseAttemptRequest.class.isAssignableFrom(clazz);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class AccurateTotalValidator implements Validator {
             return;
         }
 
-        PaymentAttemptRequest request = (PaymentAttemptRequest) target;
+        PurchaseAttemptRequest request = (PurchaseAttemptRequest) target;
         ShoppingCartRequest shoppingCartRequest = request.shoppingCart();
 
         BigDecimal sum = BigDecimal.ZERO;

@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 // 5
 @RestController
 @RequestMapping("/api/v1/payments")
-public class PaymentAttemptController {
+public class PurchaseAttemptController {
     private @PersistenceContext EntityManager manager;
 
     private final StateBelongsToCountryValidator stateBelongsToCountryValidator;
     private final AccurateTotalValidator accurateTotalValidator;
     private final StateWasSelectedValidator stateWasSelectedValidator;
 
-    public PaymentAttemptController(
+    public PurchaseAttemptController(
             StateBelongsToCountryValidator stateBelongsToCountryValidator,
             AccurateTotalValidator accurateTotalValidator,
             StateWasSelectedValidator stateWasSelectedValidator) {
@@ -39,8 +39,8 @@ public class PaymentAttemptController {
 
     @PostMapping
     public ResponseEntity<?> process(
-            @Valid @RequestBody PaymentAttemptRequest paymentAttemptRequest) {
-        Purchase newPurchase = paymentAttemptRequest.toModel(manager);
+            @Valid @RequestBody PurchaseAttemptRequest purchaseAttemptRequest) {
+        Purchase newPurchase = purchaseAttemptRequest.toModel(manager);
         return ResponseEntity.ok(newPurchase.toString());
     }
 }

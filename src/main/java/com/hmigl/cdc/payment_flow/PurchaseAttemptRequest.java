@@ -14,7 +14,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.function.Function;
 
 // 4
-public record PaymentAttemptRequest(
+public record PurchaseAttemptRequest(
         @NotBlank String name,
         @NotBlank String lastName,
         @NotBlank @Email String email,

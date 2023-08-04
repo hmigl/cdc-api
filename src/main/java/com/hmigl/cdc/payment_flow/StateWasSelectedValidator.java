@@ -16,7 +16,7 @@ public class StateWasSelectedValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return PaymentAttemptRequest.class.isAssignableFrom(clazz);
+        return PurchaseAttemptRequest.class.isAssignableFrom(clazz);
     }
 
     @Override
@@ -25,7 +25,7 @@ public class StateWasSelectedValidator implements Validator {
             return;
         }
 
-        PaymentAttemptRequest request = (PaymentAttemptRequest) target;
+        PurchaseAttemptRequest request = (PurchaseAttemptRequest) target;
         Country country = manager.find(Country.class, request.countryId());
         if (country.hasStates() && request.stateId() == null) {
             errors.rejectValue(
