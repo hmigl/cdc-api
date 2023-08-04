@@ -10,4 +10,8 @@ import java.time.LocalDate;
 public record CouponRequest(
         @NotBlank String code,
         @NotNull @Positive Integer discountPercentage,
-        @NotNull @Future LocalDate expirationDate) {}
+        @NotNull @Future LocalDate expirationDate) {
+    public Coupon toModel() {
+        return new Coupon(code, discountPercentage, expirationDate);
+    }
+}
