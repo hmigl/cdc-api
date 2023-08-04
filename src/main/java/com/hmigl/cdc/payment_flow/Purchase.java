@@ -4,11 +4,13 @@ import com.hmigl.cdc.country_state.Country;
 import com.hmigl.cdc.country_state.State;
 import com.hmigl.cdc.shared.CpfOrCnpj;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,7 +20,9 @@ import org.hibernate.validator.internal.constraintvalidators.hv.br.CNPJValidator
 import org.hibernate.validator.internal.constraintvalidators.hv.br.CPFValidator;
 import org.springframework.util.Assert;
 
-// 3
+import java.util.function.Function;
+
+// 4
 @Entity
 public class Purchase {
     private @Id @GeneratedValue Long id;
@@ -41,6 +45,11 @@ public class Purchase {
     @JoinColumn(name = "state_id_fk")
     private @NotNull State state;
 
+    @OneToOne(
+            mappedBy = "purchase",
+            cascade = {CascadeType.PERSIST})
+    private @NotNull Order order;
+
     @Deprecated
     protected Purchase() {}
 
@@ -56,27 +65,11 @@ public class Purchase {
         this.cep = builder.cep;
         this.country = builder.country;
         this.state = builder.state;
+        this.order = builder.createOrderFunction.apply(this);
     }
 
     public Long getId() {
         return id;
-    }
-
-    @Override
-    public String toString() {
-        return "Purchase{" +
-                "name='" + name + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", cellphone='" + cellphone + '\'' +
-                ", document='" + document + '\'' +
-                ", address='" + address + '\'' +
-                ", complement='" + complement + '\'' +
-                ", city='" + city + '\'' +
-                ", cep='" + cep + '\'' +
-                ", country=" + country +
-                ", state=" + state +
-                '}';
     }
 
     public static final class Builder {
@@ -91,6 +84,7 @@ public class Purchase {
         private @NotBlank String cep;
         private @NotNull Country country;
         private State state;
+        private Function<Purchase, Order> createOrderFunction;
 
         public Builder name(@NotBlank String name) {
             Assert.hasLength(name, "name must not be blank");
@@ -172,6 +166,11 @@ public class Purchase {
             Assert.isTrue(
                     state.belongsTo(this.country), "state is not associated with this country");
             this.state = state;
+            return this;
+        }
+
+        public Builder order(Function<Purchase, Order> createOrderFunction) {
+            this.createOrderFunction = createOrderFunction;
             return this;
         }
 

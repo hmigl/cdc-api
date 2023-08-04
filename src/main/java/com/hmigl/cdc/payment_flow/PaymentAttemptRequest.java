@@ -11,6 +11,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.function.Function;
+
 // 4
 public record PaymentAttemptRequest(
         @NotBlank String name,
@@ -47,6 +49,16 @@ public record PaymentAttemptRequest(
             builder.state(manager.find(State.class, stateId));
         }
 
-        return builder.build();
+        /*
+         * Here's a problem:
+         * A Purchase should not be generated without an order.
+         * On the other hand, an Order should not be generated without a Purchase...
+         *
+         * So we use lazy initialization to delay the creation of an Order until the moment a Purchase is being created
+         * */
+        Function<Purchase, Order> createOrderFunction = shoppingCart.toModel(manager);
+        Purchase purchase = builder.order(createOrderFunction).build();
+
+        return purchase;
     }
 }
