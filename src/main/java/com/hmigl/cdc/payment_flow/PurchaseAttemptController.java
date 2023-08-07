@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-// 5
+// 6
 @RestController
 @RequestMapping("/api/v1/purchases")
 public class PurchaseAttemptController {
@@ -23,20 +23,26 @@ public class PurchaseAttemptController {
     private final StateBelongsToCountryValidator stateBelongsToCountryValidator;
     private final AccurateTotalValidator accurateTotalValidator;
     private final StateWasSelectedValidator stateWasSelectedValidator;
+    private final ValidCouponValidator validCouponValidator;
 
     public PurchaseAttemptController(
             StateBelongsToCountryValidator stateBelongsToCountryValidator,
             AccurateTotalValidator accurateTotalValidator,
-            StateWasSelectedValidator stateWasSelectedValidator) {
+            StateWasSelectedValidator stateWasSelectedValidator,
+            ValidCouponValidator validCouponValidator) {
         this.stateBelongsToCountryValidator = stateBelongsToCountryValidator;
         this.accurateTotalValidator = accurateTotalValidator;
         this.stateWasSelectedValidator = stateWasSelectedValidator;
+        this.validCouponValidator = validCouponValidator;
     }
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.addValidators(
-                stateBelongsToCountryValidator, accurateTotalValidator, stateWasSelectedValidator);
+                stateBelongsToCountryValidator,
+                accurateTotalValidator,
+                stateWasSelectedValidator,
+                validCouponValidator);
     }
 
     @PostMapping

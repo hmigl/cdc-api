@@ -30,7 +30,15 @@ public class Coupon {
         this.expirationDate = expirationDate;
     }
 
+    public boolean stillValid() {
+        return expirationDate.isAfter(LocalDate.now());
+    }
+
     public Long getId() {
         return id;
+    }
+
+    public LocalDate getExpirationDate() {
+        return expirationDate;
     }
 }

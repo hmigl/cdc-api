@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.function.Function;
 
-// 4
+// 5
 public record PurchaseAttemptRequest(
         @NotBlank String name,
         @NotBlank String lastName,
@@ -26,7 +26,8 @@ public record PurchaseAttemptRequest(
         @NotBlank String cep,
         @NotNull @IdExists(fieldName = "id", domainClass = Country.class) Long countryId,
         @IdExists(fieldName = "id", domainClass = State.class) Long stateId,
-        @NotNull @Valid ShoppingCartRequest shoppingCart) {
+        @NotNull @Valid ShoppingCartRequest shoppingCart,
+        String coupon) {
     public boolean containsState() {
         return this.stateId != null;
     }
