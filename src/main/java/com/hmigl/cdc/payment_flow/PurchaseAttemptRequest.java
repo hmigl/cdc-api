@@ -2,6 +2,7 @@ package com.hmigl.cdc.payment_flow;
 
 import com.hmigl.cdc.country_state.Country;
 import com.hmigl.cdc.country_state.State;
+import com.hmigl.cdc.coupon.Coupon;
 import com.hmigl.cdc.shared.CpfOrCnpj;
 import com.hmigl.cdc.shared.IdExists;
 
@@ -28,7 +29,7 @@ public record PurchaseAttemptRequest(
         @NotNull @IdExists(fieldName = "id", domainClass = Country.class) Long countryId,
         @IdExists(fieldName = "id", domainClass = State.class) Long stateId,
         @NotNull @Valid ShoppingCartRequest shoppingCart,
-        String couponCode) {
+        @IdExists(fieldName = "code", domainClass = Coupon.class) String couponCode) {
     public boolean containsState() {
         return this.stateId != null;
     }
