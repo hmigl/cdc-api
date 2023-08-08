@@ -42,4 +42,8 @@ public class Coupon {
     public LocalDate getExpirationDate() {
         return expirationDate;
     }
+
+    public BigDecimal getDiscountPercentage() {
+        return discountPercentage;
+    }
 }

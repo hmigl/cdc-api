@@ -3,6 +3,7 @@ package com.hmigl.cdc.payment_flow;
 import com.hmigl.cdc.country_state.Country;
 import com.hmigl.cdc.country_state.State;
 import com.hmigl.cdc.coupon.Coupon;
+import com.hmigl.cdc.coupon.CouponRepository;
 import com.hmigl.cdc.shared.CpfOrCnpj;
 import com.hmigl.cdc.shared.IdExists;
 
@@ -12,10 +13,12 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import org.springframework.util.StringUtils;
+
 import java.util.Optional;
 import java.util.function.Function;
 
-// 5
+// 6
 public record PurchaseAttemptRequest(
         @NotBlank String name,
         @NotBlank String lastName,
@@ -34,7 +37,7 @@ public record PurchaseAttemptRequest(
         return this.stateId != null;
     }
 
-    public Purchase toModel(EntityManager manager) {
+    public Purchase toModel(EntityManager manager, CouponRepository repository) {
         var builder =
                 new Purchase.Builder()
                         .name(name)
@@ -60,7 +63,12 @@ public record PurchaseAttemptRequest(
          * So we use lazy initialization to delay the creation of an Order until the moment a Purchase is being created
          * */
         Function<Purchase, Order> createOrderFunction = shoppingCart.toModel(manager);
-        return builder.order(createOrderFunction).build();
+        Purchase purchase = builder.order(createOrderFunction).build();
+
+        if (StringUtils.hasText(couponCode)) {
+            purchase.applyCoupon(repository.getByCode(couponCode));
+        }
+        return purchase;
     }
 
     public Optional<String> getCouponCode() {

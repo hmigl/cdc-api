@@ -2,9 +2,12 @@ package com.hmigl.cdc.payment_flow;
 
 import com.hmigl.cdc.country_state.Country;
 import com.hmigl.cdc.country_state.State;
+import com.hmigl.cdc.coupon.AppliedCoupon;
+import com.hmigl.cdc.coupon.Coupon;
 import com.hmigl.cdc.shared.CpfOrCnpj;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -22,7 +25,7 @@ import org.springframework.util.Assert;
 
 import java.util.function.Function;
 
-// 4
+// 5
 @Entity
 public class Purchase {
     private @Id @GeneratedValue Long id;
@@ -50,6 +53,8 @@ public class Purchase {
             cascade = {CascadeType.PERSIST})
     private @NotNull Order order;
 
+    @Embedded private AppliedCoupon appliedCoupon;
+
     @Deprecated
     protected Purchase() {}
 
@@ -66,6 +71,20 @@ public class Purchase {
         this.country = builder.country;
         this.state = builder.state;
         this.order = builder.createOrderFunction.apply(this);
+    }
+
+    public void applyCoupon(@NotNull Coupon coupon) {
+        Assert.notNull(coupon, "a coupon must not be null");
+        Assert.isTrue(coupon.isValid(), "only a valid coupon can be associated with a purchase");
+        Assert.state(
+                this.appliedCoupon == null,
+                "once a purchase is associated with a coupon, it can never change");
+        /*
+         * Why not 'this.coupon = coupon'?
+         * Well, what happens with the purchases associated with this coupon if its discount percentage changes?
+         * Will discounts of purchases made in different moments with the same coupon be different? How about the expiration date?
+         */
+        this.appliedCoupon = new AppliedCoupon(coupon);
     }
 
     public Long getId() {
