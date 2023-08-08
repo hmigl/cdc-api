@@ -7,11 +7,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record CouponRequest(
         @NotBlank @UniqueValue(fieldName = "code", domainClass = Coupon.class) String code,
-        @NotNull @Positive Integer discountPercentage,
+        @NotNull @Positive BigDecimal discountPercentage,
         @NotNull @Future LocalDate expirationDate) {
     public Coupon toModel() {
         return new Coupon(code, discountPercentage, expirationDate);
