@@ -1,11 +1,9 @@
 package com.hmigl.cdc.coupon;
 
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
-public interface CouponRepository extends CrudRepository<Coupon, Long> {
-    Optional<Coupon> findByCode(final String coupon);
+public interface CouponRepository
+        extends org.springframework.data.repository.Repository<Coupon, Long> {
+    Coupon getByCode(final String code);
 }

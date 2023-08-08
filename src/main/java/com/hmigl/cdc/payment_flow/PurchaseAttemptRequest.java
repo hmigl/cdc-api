@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 // 5
@@ -27,7 +28,7 @@ public record PurchaseAttemptRequest(
         @NotNull @IdExists(fieldName = "id", domainClass = Country.class) Long countryId,
         @IdExists(fieldName = "id", domainClass = State.class) Long stateId,
         @NotNull @Valid ShoppingCartRequest shoppingCart,
-        String coupon) {
+        String couponCode) {
     public boolean containsState() {
         return this.stateId != null;
     }
@@ -58,8 +59,10 @@ public record PurchaseAttemptRequest(
          * So we use lazy initialization to delay the creation of an Order until the moment a Purchase is being created
          * */
         Function<Purchase, Order> createOrderFunction = shoppingCart.toModel(manager);
-        Purchase purchase = builder.order(createOrderFunction).build();
+        return builder.order(createOrderFunction).build();
+    }
 
-        return purchase;
+    public Optional<String> getCouponCode() {
+        return Optional.ofNullable(couponCode);
     }
 }

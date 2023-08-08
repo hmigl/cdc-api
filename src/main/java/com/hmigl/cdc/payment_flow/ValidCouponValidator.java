@@ -25,19 +25,17 @@ public class ValidCouponValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+        if (errors.hasErrors()) {
+            return;
+        }
+
         PurchaseAttemptRequest request = (PurchaseAttemptRequest) target;
-        if (errors.hasErrors() || request.coupon() == null) {
-            return;
-        }
-
-        Optional<Coupon> optionalCoupon = repository.findByCode(request.coupon());
-        if (optionalCoupon.isEmpty()) {
-            errors.rejectValue("coupon", null, "there is no such coupon");
-            return;
-        }
-
-        if (!optionalCoupon.get().stillValid()) {
-            errors.rejectValue("coupon", null, "coupon is no longer valid");
+        Optional<String> possibleCouponCode = request.getCouponCode();
+        if (possibleCouponCode.isPresent()) {
+            Coupon coupon = repository.getByCode(possibleCouponCode.get());
+            if (!coupon.isValid()) {
+                errors.rejectValue("couponCode", null, "this coupon is no longer valid");
+            }
         }
     }
 }
