@@ -16,38 +16,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-// 7
+// 4
 @RestController
 @RequestMapping("/api/v1/purchases")
 public class PurchaseAttemptController {
     private @PersistenceContext EntityManager manager;
     private final CouponRepository repository;
 
-    private final StateBelongsToCountryValidator stateBelongsToCountryValidator;
-    private final AccurateTotalValidator accurateTotalValidator;
-    private final StateWasSelectedValidator stateWasSelectedValidator;
-    private final ValidCouponValidator validCouponValidator;
+    private final ValidPurchaseAttemptValidator validPurchaseAttemptValidator;
 
     public PurchaseAttemptController(
-            StateBelongsToCountryValidator stateBelongsToCountryValidator,
-            AccurateTotalValidator accurateTotalValidator,
-            StateWasSelectedValidator stateWasSelectedValidator,
-            ValidCouponValidator validCouponValidator,
-            CouponRepository repository) {
-        this.stateBelongsToCountryValidator = stateBelongsToCountryValidator;
-        this.accurateTotalValidator = accurateTotalValidator;
-        this.stateWasSelectedValidator = stateWasSelectedValidator;
-        this.validCouponValidator = validCouponValidator;
+            CouponRepository repository,
+            ValidPurchaseAttemptValidator validPurchaseAttemptValidator) {
         this.repository = repository;
+        this.validPurchaseAttemptValidator = validPurchaseAttemptValidator;
     }
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        binder.addValidators(
-                stateBelongsToCountryValidator,
-                accurateTotalValidator,
-                stateWasSelectedValidator,
-                validCouponValidator);
+        binder.addValidators(validPurchaseAttemptValidator);
     }
 
     @PostMapping
