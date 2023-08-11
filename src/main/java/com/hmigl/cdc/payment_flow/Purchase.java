@@ -9,6 +9,7 @@ import com.hmigl.cdc.shared.CpfOrCnpj;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -23,6 +24,8 @@ import org.hibernate.validator.internal.constraintvalidators.hv.br.CNPJValidator
 import org.hibernate.validator.internal.constraintvalidators.hv.br.CPFValidator;
 import org.springframework.util.Assert;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 // 5
@@ -73,7 +76,7 @@ public class Purchase {
         this.order = builder.createOrderFunction.apply(this);
     }
 
-    public void applyCoupon(@NotNull Coupon coupon) {
+    public void applyCoupon(@NotNull Coupon coupon, EntityManager manager) {
         Assert.notNull(coupon, "a coupon must not be null");
         Assert.isTrue(coupon.isValid(), "only a valid coupon can be associated with a purchase");
         Assert.state(
@@ -84,11 +87,56 @@ public class Purchase {
          * Well, what happens with the purchases associated with this coupon if its discount percentage changes?
          * Will discounts of purchases made in different moments with the same coupon be different? How about the expiration date?
          */
+
+        List<Purchase> purchases =
+                manager.createQuery("SELECT p FROM Purchase p", Purchase.class).getResultList();
+        for (var purchase : purchases) {
+            Assert.isTrue(
+                    !this.equals(purchase),
+                    "this purchase was already persisted, no coupon can be associated with it");
+        }
+
         this.appliedCoupon = new AppliedCoupon(coupon);
     }
 
     public Long getId() {
         return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Purchase purchase = (Purchase) o;
+        return Objects.equals(name, purchase.name)
+                && Objects.equals(lastName, purchase.lastName)
+                && Objects.equals(email, purchase.email)
+                && Objects.equals(cellphone, purchase.cellphone)
+                && Objects.equals(document, purchase.document)
+                && Objects.equals(address, purchase.address)
+                && Objects.equals(complement, purchase.complement)
+                && Objects.equals(city, purchase.city)
+                && Objects.equals(cep, purchase.cep)
+                && Objects.equals(country, purchase.country)
+                && Objects.equals(state, purchase.state)
+                && Objects.equals(order, purchase.order);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                name,
+                lastName,
+                email,
+                cellphone,
+                document,
+                address,
+                complement,
+                city,
+                cep,
+                country,
+                state,
+                order);
     }
 
     public static final class Builder {

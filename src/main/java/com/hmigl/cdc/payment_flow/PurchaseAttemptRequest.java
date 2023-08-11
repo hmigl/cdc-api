@@ -66,7 +66,7 @@ public record PurchaseAttemptRequest(
         Purchase purchase = builder.order(createOrderFunction).build();
 
         if (StringUtils.hasText(couponCode)) {
-            purchase.applyCoupon(repository.getByCode(couponCode));
+            purchase.applyCoupon(repository.getByCode(couponCode), manager);
         }
         return purchase;
     }
