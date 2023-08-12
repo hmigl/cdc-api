@@ -15,8 +15,10 @@ public record PurchaseDetailsResponse(
         String complement,
         String country,
         String state,
-        BigDecimal purchaseTotal,
-        Set<BoughtItem> boughtItems) {
+        BigDecimal total,
+        Set<BoughtItem> boughtItems,
+        boolean coupon,
+        BigDecimal totalWithDiscount) {
     public static PurchaseDetailsResponse fromPurchase(Purchase purchase) {
         Assert.notNull(purchase, "purchase must not be null");
         return new PurchaseDetailsResponse(
@@ -28,7 +30,9 @@ public record PurchaseDetailsResponse(
                 purchase.getComplement(),
                 purchase.getCountry().getName(),
                 purchase.getState().getName(),
-                purchase.getOrder().total(),
-                BoughtItem.mapOrderedItems(purchase.getOrder().getOrderedItems()));
+                purchase.total(),
+                BoughtItem.mapOrderedItems(purchase.getOrder().getOrderedItems()),
+                purchase.coupon(),
+                purchase.totalWithDiscount());
     }
 }

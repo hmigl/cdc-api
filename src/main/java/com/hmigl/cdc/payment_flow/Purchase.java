@@ -24,6 +24,7 @@ import org.hibernate.validator.internal.constraintvalidators.hv.br.CNPJValidator
 import org.hibernate.validator.internal.constraintvalidators.hv.br.CPFValidator;
 import org.springframework.util.Assert;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -97,6 +98,23 @@ public class Purchase {
         }
 
         this.appliedCoupon = new AppliedCoupon(coupon);
+    }
+
+    public boolean coupon() {
+        return this.appliedCoupon != null;
+    }
+
+    public BigDecimal total() {
+        return order.total();
+    }
+
+    public BigDecimal totalWithDiscount() {
+        if (this.appliedCoupon != null) {
+            var total = this.total();
+            var discount = this.appliedCoupon.getDiscountPercentageAtMoment().divide(BigDecimal.valueOf(100));
+            return total.multiply(discount);
+        }
+        return null;
     }
 
     public Long getId() {

@@ -24,4 +24,8 @@ public class AppliedCoupon {
         this.discountPercentageAtMoment = coupon.getDiscountPercentage();
         this.expirationDateAtMoment = coupon.getExpirationDate();
     }
+
+    public BigDecimal getDiscountPercentageAtMoment() {
+        return discountPercentageAtMoment;
+    }
 }
