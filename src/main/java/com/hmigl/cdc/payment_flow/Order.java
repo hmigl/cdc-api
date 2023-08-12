@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -32,6 +33,12 @@ public class Order {
 
     public Long getId() {
         return id;
+    }
+
+    public BigDecimal total() {
+        return orderedItems.stream()
+                .map(OrderedItem::total)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     @Override

@@ -103,6 +103,42 @@ public class Purchase {
         return id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getComplement() {
+        return complement;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public String getCep() {
+        return cep;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
