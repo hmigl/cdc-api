@@ -35,6 +35,10 @@ public class Order {
         return id;
     }
 
+    public Set<OrderedItem> getOrderedItems() {
+        return orderedItems;
+    }
+
     public BigDecimal total() {
         return orderedItems.stream()
                 .map(OrderedItem::total)

@@ -4,6 +4,7 @@ import com.hmigl.cdc.payment_flow.Purchase;
 import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 public record PurchaseDetailsResponse(
         Long id,
@@ -14,7 +15,8 @@ public record PurchaseDetailsResponse(
         String complement,
         String country,
         String state,
-        BigDecimal purchaseTotal) {
+        BigDecimal purchaseTotal,
+        Set<BoughtItem> boughtItems) {
     public static PurchaseDetailsResponse fromPurchase(Purchase purchase) {
         Assert.notNull(purchase, "purchase must not be null");
         return new PurchaseDetailsResponse(
@@ -26,6 +28,7 @@ public record PurchaseDetailsResponse(
                 purchase.getComplement(),
                 purchase.getCountry().getName(),
                 purchase.getState().getName(),
-                purchase.getOrder().total());
+                purchase.getOrder().total(),
+                BoughtItem.mapOrderedItems(purchase.getOrder().getOrderedItems()));
     }
 }

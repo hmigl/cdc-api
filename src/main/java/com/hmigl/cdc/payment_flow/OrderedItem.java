@@ -32,6 +32,18 @@ public class OrderedItem {
         return priceAtMoment.multiply(BigDecimal.valueOf(amount));
     }
 
+    public Book getBook() {
+        return book;
+    }
+
+    public Long getAmount() {
+        return amount;
+    }
+
+    public BigDecimal getPriceAtMoment() {
+        return priceAtMoment;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
