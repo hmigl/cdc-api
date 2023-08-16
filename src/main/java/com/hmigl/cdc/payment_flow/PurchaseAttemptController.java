@@ -1,5 +1,7 @@
 package com.hmigl.cdc.payment_flow;
 
+import com.hmigl.cdc.coupon.CouponRepository;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -14,36 +16,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-// 5
+// 4
 @RestController
 @RequestMapping("/api/v1/purchases")
 public class PurchaseAttemptController {
     private @PersistenceContext EntityManager manager;
+    private final CouponRepository repository;
 
-    private final StateBelongsToCountryValidator stateBelongsToCountryValidator;
-    private final AccurateTotalValidator accurateTotalValidator;
-    private final StateWasSelectedValidator stateWasSelectedValidator;
+    private final ValidPurchaseAttemptValidator validPurchaseAttemptValidator;
 
     public PurchaseAttemptController(
-            StateBelongsToCountryValidator stateBelongsToCountryValidator,
-            AccurateTotalValidator accurateTotalValidator,
-            StateWasSelectedValidator stateWasSelectedValidator) {
-        this.stateBelongsToCountryValidator = stateBelongsToCountryValidator;
-        this.accurateTotalValidator = accurateTotalValidator;
-        this.stateWasSelectedValidator = stateWasSelectedValidator;
+            CouponRepository repository,
+            ValidPurchaseAttemptValidator validPurchaseAttemptValidator) {
+        this.repository = repository;
+        this.validPurchaseAttemptValidator = validPurchaseAttemptValidator;
     }
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        binder.addValidators(
-                stateBelongsToCountryValidator, accurateTotalValidator, stateWasSelectedValidator);
+        binder.addValidators(validPurchaseAttemptValidator);
     }
 
     @PostMapping
     @Transactional
     public ResponseEntity<PurchaseAttemptRequest> process(
             @Valid @RequestBody PurchaseAttemptRequest purchaseAttemptRequest) {
-        var purchase = purchaseAttemptRequest.toModel(manager);
+        var purchase = purchaseAttemptRequest.toModel(manager, repository);
         manager.persist(purchase);
         var uri =
                 UriComponentsBuilder.fromPath("/purchases/{id}")

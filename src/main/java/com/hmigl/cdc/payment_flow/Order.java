@@ -9,7 +9,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity(name = "`order`")
@@ -31,5 +33,28 @@ public class Order {
 
     public Long getId() {
         return id;
+    }
+
+    public Set<OrderedItem> getOrderedItems() {
+        return orderedItems;
+    }
+
+    public BigDecimal total() {
+        return orderedItems.stream()
+                .map(OrderedItem::total)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(orderedItems, order.orderedItems);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(orderedItems);
     }
 }

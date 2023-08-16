@@ -17,7 +17,7 @@ public class OrderedItem {
     @ManyToOne private @NotNull @Valid Book book;
 
     private Long amount;
-    private BigDecimal currentPrice;
+    private BigDecimal priceAtMoment;
 
     @Deprecated
     protected OrderedItem() {}
@@ -25,7 +25,23 @@ public class OrderedItem {
     public OrderedItem(@NotNull @Valid Book book, @NotNull @Positive Long amount) {
         this.book = book;
         this.amount = amount;
-        this.currentPrice = book.getPrice();
+        this.priceAtMoment = book.getPrice();
+    }
+
+    public BigDecimal total() {
+        return priceAtMoment.multiply(BigDecimal.valueOf(amount));
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public Long getAmount() {
+        return amount;
+    }
+
+    public BigDecimal getPriceAtMoment() {
+        return priceAtMoment;
     }
 
     @Override
