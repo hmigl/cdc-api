@@ -47,7 +47,7 @@ public class Book {
     @Deprecated
     protected Book() {}
 
-    private Book(
+    public Book(
             @NotBlank String title,
             @NotBlank @Size(max = 500) String overview,
             @NotBlank String summary,

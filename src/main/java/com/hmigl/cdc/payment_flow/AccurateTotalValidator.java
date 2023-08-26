@@ -3,7 +3,6 @@ package com.hmigl.cdc.payment_flow;
 import com.hmigl.cdc.book.Book;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -14,7 +13,11 @@ import java.math.BigDecimal;
 @Component
 public class AccurateTotalValidator implements Validator {
 
-    private @PersistenceContext EntityManager manager;
+    private final EntityManager manager;
+
+    public AccurateTotalValidator(EntityManager manager) {
+        this.manager = manager;
+    }
 
     @Override
     public boolean supports(Class<?> clazz) {
