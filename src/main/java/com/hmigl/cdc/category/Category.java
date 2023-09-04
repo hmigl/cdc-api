@@ -25,7 +25,7 @@ public class Category {
     @Deprecated
     protected Category() {}
 
-    private Category(String name) {
+    public Category(String name) {
         this.name = name;
     }
 

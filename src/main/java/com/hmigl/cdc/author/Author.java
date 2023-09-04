@@ -33,7 +33,7 @@ public class Author {
 
     protected Author() {}
 
-    private Author(String name, String email, String description) {
+    public Author(String name, String email, String description) {
         this.name = name;
         this.email = email;
         this.description = description;
